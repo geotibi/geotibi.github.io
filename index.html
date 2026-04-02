@@ -1,9 +1,604 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Product Owner / Project Manager / Data Analyst / Automation Technical Authority Expert</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tibi — IT & Business</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0e10;
+      --surface: #13161a;
+      --border: #1e2328;
+      --accent: #c8a96e;
+      --accent2: #4a90a4;
+      --text: #e8e4dc;
+      --muted: #6b7280;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── GRID LINES ── */
+    .grid-lines {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .container {
+      position: relative; z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 4rem 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      opacity: 0; animation: fadeUp 0.8s 0.1s forwards;
+    }
+
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em;
+    }
+
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 6rem 0 4rem;
+      opacity: 0; animation: fadeUp 0.9s 0.3s forwards;
+    }
+
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: inline-block; width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      font-size: 0.8rem;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 3rem;
+    }
+
+    .cta-row {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin: 5rem 0 3rem;
+      opacity: 0; animation: fadeUp 0.8s forwards;
+    }
+
+    .section-divider .label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .section-divider .line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 5rem;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      padding: 2rem 1.75rem;
+      transition: background 0.2s;
+      opacity: 0; animation: fadeUp 0.7s forwards;
+    }
+
+    .skill-card:hover { background: #181c21; }
+
+    .skill-icon {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .skill-name {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-list {
+      display: flex; flex-direction: column; gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 5rem;
+    }
+
+    .project-item {
+      background: var(--surface);
+      padding: 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: start;
+      cursor: pointer;
+      transition: background 0.2s;
+      opacity: 0; animation: fadeUp 0.7s forwards;
+      text-decoration: none; color: inherit;
+    }
+
+    .project-item:hover { background: #181c21; }
+
+    .project-item:hover .arrow { transform: translate(4px, -4px); }
+
+    .project-num {
+      font-size: 0.6rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-title {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 500px;
+    }
+
+    .project-tags {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .arrow {
+      font-size: 1.2rem;
+      color: var(--accent);
+      transition: transform 0.2s;
+      padding-top: 0.25rem;
+    }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 5rem;
+      opacity: 0; animation: fadeUp 0.8s forwards;
+    }
+
+    .stat {
+      background: var(--surface);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── CONTACT ── */
+    .contact-block {
+      border: 1px solid var(--border);
+      padding: 4rem;
+      text-align: center;
+      margin-bottom: 5rem;
+      position: relative;
+      overflow: hidden;
+      opacity: 0; animation: fadeUp 0.8s forwards;
+    }
+
+    .contact-block::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(200,169,110,0.06), transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-block h2 {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .contact-block p {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      line-height: 1.9;
+    }
+
+    .contact-links {
+      display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    }
+
+    .contact-link {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.25rem;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      opacity: 0; animation: fadeUp 0.8s forwards;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* stagger children */
+    .skill-card:nth-child(1) { animation-delay: 0.4s; }
+    .skill-card:nth-child(2) { animation-delay: 0.5s; }
+    .skill-card:nth-child(3) { animation-delay: 0.6s; }
+    .skill-card:nth-child(4) { animation-delay: 0.7s; }
+    .skill-card:nth-child(5) { animation-delay: 0.8s; }
+    .skill-card:nth-child(6) { animation-delay: 0.9s; }
+
+    .project-item:nth-child(1) { animation-delay: 0.5s; }
+    .project-item:nth-child(2) { animation-delay: 0.65s; }
+    .project-item:nth-child(3) { animation-delay: 0.8s; }
+
+    .section-divider { animation-delay: 0.4s; }
+    .stats-row { animation-delay: 0.5s; }
+    .contact-block { animation-delay: 0.5s; }
+    footer { animation-delay: 0.6s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .contact-block { padding: 2.5rem 1.5rem; }
+      header { flex-direction: column; gap: 1rem; }
+      .project-item { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<h1>Experience</h1>
-<p>Experienced Automation Lead with a demonstrated history of working in the information technology and services industry. Skilled in Universal Mobile Telecommunications System (UMTS), RAN, Wireless Technologies, Telecommunications, and 3G. Strong engineering professional graduated from Universitatea „Politehnica" din București.</p>
+
+<div class="grid-lines"></div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Tibi G.</div>
+    <div class="status">
+      <span class="dot"></span>
+      Available for opportunities
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">IT & Business Professional</div>
+    <h1>Where <em>Technology</em><br>meets Strategy</h1>
+    <p class="hero-desc">
+      I bridge the gap between complex technical systems and business objectives —
+      building solutions that are both robust and strategically aligned.
+      Based in Romania, working globally.
+    </p>
+    <div class="cta-row">
+      <a href="https://github.com/geotibi" class="btn btn-primary" target="_blank">View GitHub</a>
+      <a href="mailto:your@email.com" class="btn btn-secondary">Get in Touch</a>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <div class="section-divider">
+    <span class="label">Competencies</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-icon">⚙️</div>
+      <div class="skill-name">Engineering</div>
+      <div class="skill-desc">System design, architecture, and scalable backend solutions.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📊</div>
+      <div class="skill-name">Business Analysis</div>
+      <div class="skill-desc">Translating business needs into technical requirements and KPIs.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name">Data & Automation</div>
+      <div class="skill-desc">Process automation, data pipelines, and workflow optimization.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">☁️</div>
+      <div class="skill-name">Cloud & DevOps</div>
+      <div class="skill-desc">Infrastructure, deployment pipelines, and cloud-native tools.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🤝</div>
+      <div class="skill-name">Project Management</div>
+      <div class="skill-desc">Agile delivery, cross-functional teams, and stakeholder alignment.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔐</div>
+      <div class="skill-name">Security & Compliance</div>
+      <div class="skill-desc">Risk management, best practices, and regulatory frameworks.</div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="section-divider">
+    <span class="label">Selected Work</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="projects-list">
+    <a href="#" class="project-item">
+      <div>
+        <div class="project-num">01</div>
+        <div class="project-title">Project Alpha</div>
+        <div class="project-desc">
+          A brief description of what this project does, the problem it solves, and its impact.
+          Replace this with your actual project details.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Python</span>
+          <span class="tag">REST API</span>
+          <span class="tag">PostgreSQL</span>
+        </div>
+      </div>
+      <div class="arrow">↗</div>
+    </a>
+    <a href="#" class="project-item">
+      <div>
+        <div class="project-num">02</div>
+        <div class="project-title">Project Beta</div>
+        <div class="project-desc">
+          Describe your second project here — what technologies you used, what you built,
+          and why it matters.
+        </div>
+        <div class="project-tags">
+          <span class="tag">React</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Docker</span>
+        </div>
+      </div>
+      <div class="arrow">↗</div>
+    </a>
+    <a href="#" class="project-item">
+      <div>
+        <div class="project-num">03</div>
+        <div class="project-title">Project Gamma</div>
+        <div class="project-desc">
+          Your third highlight project. Keep descriptions concise — one or two lines is enough
+          to spark curiosity.
+        </div>
+        <div class="project-tags">
+          <span class="tag">Excel / VBA</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+      <div class="arrow">↗</div>
+    </a>
+  </div>
+
+  <!-- STATS -->
+  <div class="section-divider">
+    <span class="label">By the Numbers</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">X+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">XX</div>
+      <div class="stat-label">Projects Delivered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">X</div>
+      <div class="stat-label">Industries Served</div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section-divider">
+    <span class="label">Contact</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="contact-block">
+    <h2>Let's build<br><em>something together.</em></h2>
+    <p>Open to collaborations, consulting opportunities,<br>and interesting conversations.</p>
+    <div class="contact-links">
+      <a href="https://github.com/geotibi" class="contact-link" target="_blank">GitHub</a>
+      <a href="mailto:your@email.com" class="contact-link">Email</a>
+      <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Tibi G.</span>
+    <span>geotibi.github.io</span>
+  </footer>
+
+</div>
 </body>
 </html>
